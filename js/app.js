@@ -1,61 +1,54 @@
-var app=function(){ 
+;var app=function(){ 
 
-var symbols=new Set(["anchor","bicycle","bolt","bomb","cube","diamond","leaf","paper-plane-o"]);
-
-/**
- * Card class
- * @param {*  card's symbol} symb 
- */
-var Card=function(symb){
-    this.symbol=symb;
-    this.show=false;
-    this.matched=false;
-}
-
-/**
- * display the card
- */
-Card.prototype.display=function(){
-    this.show=true;
-}
-
-/**
- * hide the card
- */
-Card.prototype.hide=function(){
-    this.show=false;
-}
-
-/**
- * card is matched.
- */
-Card.prototype.match=function(){
-    this.matched=true;
-}
-
+const SYMBOLS=new Set(['anchor','bicycle','bolt','bomb','cube','diamond','leaf','paper-plane-o']);
+const GRADES=3;
 /*
  * Create a list that holds all of your cards
  */ 
-var cards=[], cardsOpened=[], moveCounter=0;
-
-symbols.forEach(item=>{
-    cards.push(new Card(item))
-    cards.push(new Card(item))
-}); 
-
-function addCardToOpenList(card){
-    cardsOpened.push(card);
+function App(){
+    this.moveCounter=0;
+    this.cards=[];
+    this.cardsOpened=[]; 
+    this.win=false;
+    this.grade=3;
+    this._init();
 }
 
-function resetOpenList(){
-    for (var index = cardsOpened.length-1; index >=0; index--) {
-        cardsOpened[index].hide();
-        cardsOpened.splice(i,1); 
+App.prototype._init=function(){
+    this.moveCounter=0;
+    this.cards=[];
+    this.grade=3;
+    SYMBOLS.forEach(item=>{
+        this.cards.push(new Card(item))
+        this.cards.push(new Card(item))
+    }); 
+    this.cards=shuffle(this.cards);
+}
+
+
+App.prototype.addCardToOpenList=function(card){
+    this.cardsOpened.push(card);
+}
+
+App.prototype.resetOpenList=function(){
+    for (let index = this.cardsOpened.length-1; index >=0; index--) { 
+        this.cardsOpened.splice(index,1); 
     }
 }
 
-function isAllMatched(){
-    return cards.reduce( (x,y)=> x.matched && y.matched,true);
+App.prototype.isAllMatched=function(){ 
+    this.win=this.cards.map(x=>x.matched).reduce((x,y)=> x && y);
+}
+
+App.prototype.increaseMoveCounter=function(){
+   this.moveCounter++;
+   if (this.grade<=0 || this.moveCounter<=16+2) return;
+   if (this.moveCounter>16+2 && this.moveCounter<=16+8){
+        if (this.grade<=2) return; 
+   } else if (this.moveCounter>16+8 && this.moveCounter<=16+16){
+        if (this.grade<=1) return; 
+   }
+   this.grade--; 
 }
 /*
  * Display the cards on the page
@@ -66,7 +59,7 @@ function isAllMatched(){
 
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
-    var currentIndex = array.length, temporaryValue, randomIndex;
+    let currentIndex = array.length, temporaryValue, randomIndex;
 
     while (currentIndex !== 0) {
         randomIndex = Math.floor(Math.random() * currentIndex);
@@ -89,35 +82,39 @@ function shuffle(array) {
  *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
-function cardsClickEventHandler(index){
-    var card=cards[index];
+App.prototype.cardsClickEventHandler=function(index){
+    const card=this.cards[index];
+    if (card.matched) return;
+
     card.display();
-    addCardToOpenList(card);
-    if (cardsOpened.length===2){
-        if (cardsOpened[0].symbol===cardsOpened[1].symbols){
-            cardsOpened[0].match();
-            cardsOpened[1].match();
+    this.addCardToOpenList(card);
+    const length=this.cardsOpened.length;
+    if (length>=2){
+        
+        if (this.cardsOpened[length-2].symbol===this.cardsOpened[length-1].symbol){
+            this.cardsOpened[length-2].match();
+            this.cardsOpened[length-1].match();
         } else {
-            resetOpenList();
+            this.cardsOpened[length-2].hide();
+            this.cardsOpened[length-1].hide();
         }
-    }
-    moveCounter++;
 
-    if (isAllMatched()){
-        // TODO done
+        this.resetOpenList();
+        
     }
+    this.increaseMoveCounter();  
+    this.isAllMatched(); 
 }
 
-function getCards(){
-    return cards;
+App.prototype.getCards=function(){
+    return this.cards;
 }
-function restart(){
-    moveCounter=0;
-    cards=shuffle(cards);
+
+App.prototype.restart=function(){
+    this._init();
 }
 
     return {
-        getCards: getCards,
-        restart: restart
+        App
     } 
 }();
