@@ -7,6 +7,7 @@
     <link rel="stylesheet prefetch" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
     <link rel="stylesheet prefetch" href="https://fonts.googleapis.com/css?family=Coda">
     <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="css/modal.css">
 </head>
 <body>
 
@@ -29,6 +30,18 @@
         <ul class="deck"> 
         </ul>
     </div> 
+    <div class="modal-shade hide">
+        <div class="modal-container"> 
+            <object class="modal-icon" data="img/success.svg" type="image/svg+xml"> 
+            </object>
+            <h2 class="modal-title">Congratulations! You Won!</h2> 
+            <div class="modal-msg">
+                <p>With <span class="final-moves">17</span> Moves and  <span class="final-stars">1</span> Starts.</p>
+                <p>Woooooo!</p>    
+            </div> 
+            <button class="modal-ok">Play again!</button>
+        </div>
+    </div>
 
     <script src="lib/jquery-3.2.1.min.js"></script>
     <script src="js/Card.js"></script>
@@ -53,7 +66,11 @@
                 });
 
                 binder.simpleBind(game,'win',value=>{
-                    if (value) alert('win');
+                    if (value) {
+                        $('.modal-shade').removeClass('hide');
+                        $('.final-moves').text(game.moveCounter);
+                        $('.final-stars').text(game.grade);
+                    }
                 });
 
                 deck.empty();
@@ -62,14 +79,14 @@
                 for (let index = 0; index < game.getCards().length; index++) {
                     (function(index){
                         const element = game.getCards()[index];
-                        deck.append(`<li class="card show" data-index="${index}" id="card${index}">
+                        deck.append(`<li class="card" data-index="${index}" id="card${index}">
                         <i class="fa fa-${element.symbol}" data-index="${index}"></i>
                         </li>`);
                         binder.simpleBind(element,'show',value=>{
                             if (value){
-                                $(`#card${index}`).addClass('open');
+                                $(`#card${index}`).addClass('open show');
                             } else {
-                                setTimeout(()=>{ $(`#card${index}`).removeClass('open'); },1000); 
+                                setTimeout(()=>{ $(`#card${index}`).removeClass('open show'); },1000); 
                             } 
                         });
 
@@ -92,6 +109,11 @@
 
             $('.restart').click(function(){
                 start();
+            });
+ 
+            $('.modal-ok').click(function(){
+                start();
+                $('.modal-shade').addClass('hide');
             });
 
             start();
