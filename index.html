@@ -33,14 +33,17 @@
         </ul>
     </div> 
     <div class="modal-shade hide">
-        <div class="modal-container"> 
+        <ul class="modal-container"> 
             <object class="modal-icon" data="img/success.svg" type="image/svg+xml"> 
             </object>
             <h2 class="modal-title">Congratulations! You Won!</h2> 
-            <div class="modal-msg">
+            <section class="modal-msg">
                 <p>With <span class="final-moves">17</span> Moves and  <span class="final-stars">1</span> Starts.</p>
                 <p>Woooooo!</p>    
-            </div> 
+            </section> 
+            <h2 class="modal-title">Ranking list</h2> 
+            <ul class="modal-rank-list">
+            </ul>
             <button class="modal-ok">Play again!</button>
         </div>
     </div>
@@ -48,6 +51,7 @@
     <script src="lib/jquery-3.2.1.min.js"></script>
     <script src="js/Card.js"></script>
     <script src="js/binder.js"></script>
+    <script src="js/store.js"></script>
     <script src="js/app.js"></script>
     <script>  
         $(function(){ 
@@ -116,7 +120,12 @@
                         setTimeout(() => {
                             $('.modal-shade').removeClass('hide');
                             $('.final-moves').text(game.moveCounter);
-                            $('.final-stars').text(game.grade);        
+                            $('.final-stars').text(game.grade); 
+                            const list=store.getRank();
+                            list.push({moveCounter:game.moveCounter,date:new Date().toLocaleString()});
+                            list.sort((x,y)=> x.moveCounter>y.moveCounter );
+                            store.setRank(list); 
+                            showRankList(list);
                         }, 1000); 
                     }
                 });
@@ -125,6 +134,12 @@
                 binder.simpleBind(game,'timer',value=>{
                     $('.timer').text(value);
                 });
+
+                function showRankList(list){ 
+                    for (const item of list) {
+                        $('.modal-rank-list').append(`<li>${item.date} - ${item.moveCounter} moves </li>`); 
+                    } 
+                }
             }
 
             /**
@@ -137,6 +152,7 @@
                         deck.append(`<li class="card" data-index="${index}" id="card${index}">
                         <i class="fa fa-${element.symbol}" data-index="${index}"></i>
                         </li>`);
+                        //show state binding
                         binder.simpleBind(element,'show',value=>{
                             if (value){
                                 $(`#card${index}`).addClass('open show');
@@ -145,6 +161,7 @@
                             } 
                         });
 
+                        //matched state binding
                         binder.simpleBind(element,'matched',value=>{
                             if (value){
                                 $(`#card${index}`).removeClass('open show').addClass('match animated rubberBand');

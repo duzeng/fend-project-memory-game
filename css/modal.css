@@ -17,8 +17,9 @@ h1,h2,h3,h4,h5,h6,p{margin: 0;padding: 0;}
     left: 50%;
     top: 50%;
     transform: translate(-50%,-50%);
-    height: 350px;
+    /* height: 350px; */
     width: 600px;
+    padding: 40px; 
     border-radius: 3px;
     border: 1px solid #eee;
     background-color: #fff;
@@ -28,18 +29,49 @@ h1,h2,h3,h4,h5,h6,p{margin: 0;padding: 0;}
     display: inline-block;
     height: 80px;
     width: 80px;
-    margin: 40px 0;
+    /* margin: 40px 0; */
 } 
+
 .modal-title{
     margin-bottom: 10px;
 }
+
 .modal-msg{
     margin-bottom: 20px;
 }
+
 .modal-msg p{ 
     color: #777;
 }
+
+.modal-rank-list{
+    border:1px solid #eee;
+    padding: 0;
+}
+.modal-rank-list li{
+    list-style: none;
+    font-family: FontAwesome;
+}
+
+.modal-rank-list li:not(:first-child){
+    border-top: 1px solid #eee;
+}
+
+.modal-rank-list li:nth-child(1)::before{
+    content: "\f024";  
+    color:rgb(1,183,168);
+}
+.modal-rank-list li:nth-child(2)::before{
+    content: "\f11e";
+    color:rgb(1,183,168);
+}
+.modal-rank-list li:nth-child(3)::before{
+    content: "\f11d";
+    color:rgb(1,183,168);
+}
+
 .modal-ok{
+    margin-top: 10px;
     padding:5px 25px;
     background-color: rgb(1,183,168);
     border:1px solid transparent;
