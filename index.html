@@ -22,8 +22,10 @@
 
         	<span class="moves">3</span> Moves
 
-            <div class="restart">
-        		<i class="fa fa-repeat"></i>
+            <div class="assist">
+                <i class="fa fa-clock-o"></i>
+                <span class="timer">0</span>
+        		<i class="fa fa-repeat restart"></i>
         	</div>
         </section>
 
@@ -50,21 +52,62 @@
     <script>  
         $(function(){ 
             const deck=$('.deck');
+            // create a App
             const game=new app.App();
 
+            //set up deck's click event handler
+            deck.click(function(e){
+                const index=$(e.target).data('index');
+                if  (typeof index==='number') {
+                    game.cardsClickEventHandler(index);
+                } 
+            });
+
+            //restart button's click event handler
+            $('.restart').click(function(){
+                start();
+            });
+ 
+            // ok button's click event handler
+            $('.modal-ok').click(function(){
+                start();
+                $('.modal-shade').addClass('hide');
+            });
+
+            start();
+
+            /**
+             * start function
+            */
             function start(){
+                bind();
+                // clear cards element
+                deck.empty();
+                // start app
+                game.restart();  
+                bindAllCardToDom();
+            }  
+
+            /**
+             * bind game's state
+            */
+            function bind(){
+                // bind move counter
                 binder.simpleBind(game,'moveCounter',value=>{
                     $('.moves').text(value);
                 });
 
+                // bind grade
                 binder.simpleBind(game,'grade',value=>{
                     $('.stars').empty();
                     if (value<=0)  return;
+ 
                     for (let index = 0; index < value; index++) {
                         $('.stars').append('<li><i class="fa fa-star"></i></li>'); 
                     } 
                 });
 
+                //bind success state
                 binder.simpleBind(game,'win',value=>{
                     if (value) {
                         $('.modal-shade').removeClass('hide');
@@ -73,9 +116,16 @@
                     }
                 });
 
-                deck.empty();
-                game.restart();
-                
+                //bind timer
+                binder.simpleBind(game,'timer',value=>{
+                    $('.timer').text(value);
+                });
+            }
+
+            /**
+             * bind all cards to dom
+             */ 
+            function bindAllCardToDom(){
                 for (let index = 0; index < game.getCards().length; index++) {
                     (function(index){
                         const element = game.getCards()[index];
@@ -100,23 +150,8 @@
 
                     })(index); 
                 } 
-            }  
+            }
 
-            deck.click(function(e){
-                const index=$(e.target).data('index'); 
-                game.cardsClickEventHandler(index);
-            });
-
-            $('.restart').click(function(){
-                start();
-            });
- 
-            $('.modal-ok').click(function(){
-                start();
-                $('.modal-shade').addClass('hide');
-            });
-
-            start();
         });
         
     </script>

@@ -63,10 +63,11 @@ h1 {
     justify-content: center;
     align-items: center;
     box-shadow: 5px 2px 20px 0 rgba(46, 61, 73, 0.5);
+    transition: transform 0.5s linear;
 }
 
-.deck .card.open {
-    transform: rotateY(0);
+.deck .card.open { 
+    transform: rotateY(180deg);
     background: #02b3e4;
     cursor: default;
 }
@@ -103,7 +104,11 @@ h1 {
     display: inline-block;
 }
 
-.score-panel .restart {
+.score-panel .assist {
     float: right;
     cursor: pointer;
 }
+.score-panel .assist .timer{
+    margin:0 15px 0 3px;
+}
+

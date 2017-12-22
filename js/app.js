@@ -2,44 +2,67 @@
 
 const SYMBOLS=new Set(['anchor','bicycle','bolt','bomb','cube','diamond','leaf','paper-plane-o']);
 const GRADES=3;
-/*
- * Create a list that holds all of your cards
- */ 
+/**
+ * class App
+ */
 function App(){
-    this.moveCounter=0;
-    this.cards=[];
-    this.cardsOpened=[]; 
-    this.win=false;
-    this.grade=3;
     this._init();
 }
 
+/**
+ * Initialization function
+ */
 App.prototype._init=function(){
+    // step counting
     this.moveCounter=0;
+    // list of all cards 
     this.cards=[];
+    // list of opened cards
+    this.cardsOpened=[]; 
+    // success state
+    this.win=false;
+    // 上star rating
     this.grade=3;
-    SYMBOLS.forEach(item=>{
-        this.cards.push(new Card(item))
-        this.cards.push(new Card(item))
-    }); 
-    this.cards=shuffle(this.cards);
+    // timer
+    this.timer=0;
+    
+    // create cards list from SYMBOLS
+    this.cards=[...[...SYMBOLS].map(item=> new Card(item)),...[...SYMBOLS].map(item=> new Card(item))];
+
+    // shuffle cards
+    this.cards=shuffle(this.cards); 
+    // start timer
+    this.intervalId=setInterval(()=> this.timer++ ,1000)
 }
 
-
+/**
+ * add a card into list of opened
+ * @param {* A Card's instance} card 
+ */
 App.prototype.addCardToOpenList=function(card){
     this.cardsOpened.push(card);
 }
 
+/**
+ * Clear the list of opened
+ */
 App.prototype.resetOpenList=function(){
     for (let index = this.cardsOpened.length-1; index >=0; index--) { 
         this.cardsOpened.splice(index,1); 
     }
 }
 
-App.prototype.isAllMatched=function(){ 
+/**
+ * Whether the cards is all matched
+ */
+App.prototype.whetherAllCardsMatched=function(){ 
     this.win=this.cards.map(x=>x.matched).reduce((x,y)=> x && y);
+    if (this.win) clearInterval(this.intervalId);
 }
 
+/**
+ * Increase the step, and give a grade
+ */
 App.prototype.increaseMoveCounter=function(){
    this.moveCounter++;
    if (this.grade<=0 || this.moveCounter<=16+2) return;
@@ -83,14 +106,17 @@ function shuffle(array) {
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
 App.prototype.cardsClickEventHandler=function(index){
-    const card=this.cards[index];
+    // get the card which be clicked
+    const card=this.cards[index]; 
     if (card.matched) return;
+    if (this.cardsOpened.some(item=>item===card)) return;
 
     card.display();
     this.addCardToOpenList(card);
     const length=this.cardsOpened.length;
+ 
     if (length>=2){
-        
+        //comparing for equality 
         if (this.cardsOpened[length-2].symbol===this.cardsOpened[length-1].symbol){
             this.cardsOpened[length-2].match();
             this.cardsOpened[length-1].match();
@@ -98,19 +124,26 @@ App.prototype.cardsClickEventHandler=function(index){
             this.cardsOpened[length-2].hide();
             this.cardsOpened[length-1].hide();
         }
-
+        // clear list of opened
         this.resetOpenList();
         
     }
     this.increaseMoveCounter();  
-    this.isAllMatched(); 
+    this.whetherAllCardsMatched(); 
 }
 
+/**
+ * return list of all cards
+ */
 App.prototype.getCards=function(){
     return this.cards;
 }
 
+/**
+ * Restart funciton
+ */
 App.prototype.restart=function(){
+    clearInterval(this.intervalId);
     this._init();
 }
 
