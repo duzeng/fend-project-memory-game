@@ -86,6 +86,7 @@ h1 {
     background: #f9583c; 
 }
 
+/* animation reference to animate.css */
 .animated {
     animation-duration: 1s;
     animation-fill-mode: both;
@@ -181,8 +182,6 @@ h1 {
       transform: skewX(-0.1953125deg) skewY(-0.1953125deg);
     }
 }
-  
-
 
 /*
  * Styles for the Score Panel
