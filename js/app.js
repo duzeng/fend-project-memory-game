@@ -121,8 +121,8 @@ App.prototype.cardsClickEventHandler=function(index){
             this.cardsOpened[length-2].match();
             this.cardsOpened[length-1].match();
         } else {
-            this.cardsOpened[length-2].hide();
-            this.cardsOpened[length-1].hide();
+            this.cardsOpened[length-2].hideAfterMismatch();
+            this.cardsOpened[length-1].hideAfterMismatch();
         }
         // clear list of opened
         this.resetOpenList();

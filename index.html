@@ -113,9 +113,11 @@
                 //bind success state
                 binder.simpleBind(game,'win',value=>{
                     if (value) {
-                        $('.modal-shade').removeClass('hide');
-                        $('.final-moves').text(game.moveCounter);
-                        $('.final-stars').text(game.grade);
+                        setTimeout(() => {
+                            $('.modal-shade').removeClass('hide');
+                            $('.final-moves').text(game.moveCounter);
+                            $('.final-stars').text(game.grade);        
+                        }, 1000); 
                     }
                 });
 
@@ -139,15 +141,21 @@
                             if (value){
                                 $(`#card${index}`).addClass('open show');
                             } else {
-                                setTimeout(()=>{ $(`#card${index}`).removeClass('open show'); },1000); 
+                                $(`#card${index}`).removeClass('open show not-match'); 
                             } 
                         });
 
                         binder.simpleBind(element,'matched',value=>{
                             if (value){
-                                $(`#card${index}`).removeClass('open show').addClass('match');
-                            } else {
-                                setTimeout(()=>{ $(`#card${index}`).removeClass('open show match'); },1000); 
+                                $(`#card${index}`).removeClass('open show').addClass('match animated rubberBand');
+                                setTimeout(() => {
+                                    $(`#card${index}`).removeClass('animated rubberBand');
+                                }, 1500);
+                            } else { 
+                                $(`#card${index}`).addClass('not-match animated jello');
+                                setTimeout(() => {
+                                    $(`#card${index}`).removeClass('animated jello');
+                                }, 1500); 
                             } 
                         });
 

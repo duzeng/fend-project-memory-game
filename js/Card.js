@@ -25,6 +25,17 @@ Card.prototype.hide=function(){
 }
 
 /**
+ * delay the hide action after mismatch
+ * @param {* delay time} time 
+ */
+Card.prototype.hideAfterMismatch=function(time=1500){
+  this.matched=false;
+  setTimeout(() => {
+    this.hide();
+  }, time); 
+}
+
+/**
 * A successful match.
 */
 Card.prototype.match=function(){
