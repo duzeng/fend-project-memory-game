@@ -100,11 +100,14 @@
                 // bind grade
                 binder.simpleBind(game,'grade',value=>{
                     $('.stars').empty();
-                    if (value<=0)  return;
- 
+                    if (value<0)  return;
+                    
                     for (let index = 0; index < value; index++) {
                         $('.stars').append('<li><i class="fa fa-star"></i></li>'); 
                     } 
+                    for (let index = 0; index < game.getMaxGrade()-value; index++) {
+                        $('.stars').append('<li><i class="fa fa-star-o"></i></li>'); 
+                    }
                 });
 
                 //bind success state

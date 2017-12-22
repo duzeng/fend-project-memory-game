@@ -21,8 +21,8 @@ App.prototype._init=function(){
     this.cardsOpened=[]; 
     // success state
     this.win=false;
-    // 上star rating
-    this.grade=3;
+    // star rating
+    this.grade=GRADES;
     // timer
     this.timer=0;
     
@@ -147,6 +147,12 @@ App.prototype.restart=function(){
     this._init();
 }
 
+/**
+ * return max value of grade
+ */
+App.prototype.getMaxGrade=function(){
+    return GRADES;
+}
     return {
         App
     } 
