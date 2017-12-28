@@ -108,7 +108,7 @@ function shuffle(array) {
 App.prototype.cardsClickEventHandler=function(index){
     // get the card which be clicked
     const card=this.cards[index]; 
-    if (card.matched) return;
+    if (card.matched || card.show) return;
     if (this.cardsOpened.some(item=>item===card)) return;
 
     card.display();
